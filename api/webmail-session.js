@@ -32,6 +32,11 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const [login, domain] = email.split('@');
+    if (!login || !domain) {
+      return res.status(400).json({ error: "Email inválido" });
+    }
+
     // UAPI: Session/create_webmail_session_for_mail_user
     // Cria uma sessão temporária de webmail sem precisar da senha do usuário
     const url = `https://${CPANEL_HOST}:2083/execute/Session/create_webmail_session_for_mail_user`;
@@ -41,7 +46,7 @@ module.exports = async (req, res) => {
       headers: {
         Authorization: `cpanel ${CPANEL_USER}:${CPANEL_TOKEN}`,
       },
-      params: { email },
+      params: { login, domain },
       timeout: 15000,
     });
 

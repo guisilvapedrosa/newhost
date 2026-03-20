@@ -9,8 +9,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
+      background: #f8fafc;
+      color: #1e293b;
       min-height: 100vh;
       padding: 2rem 1rem;
     }
@@ -21,39 +21,41 @@
     }
 
     header {
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
     }
 
     h1 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      color: #f8fafc;
+      color: #0f172a;
     }
 
     h1 span {
-      color: #38bdf8;
+      color: #2563eb;
     }
 
     .subtitle {
-      color: #94a3b8;
-      margin-top: 0.4rem;
-      font-size: 0.95rem;
+      color: #64748b;
+      margin-top: 0.3rem;
+      font-size: 0.9rem;
     }
 
     .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #334155;
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid #e2e8f0;
       gap: 1rem;
+      background: #fff;
     }
 
     .card-header-left {
@@ -63,22 +65,22 @@
     }
 
     #status {
-      font-size: 0.85rem;
-      color: #94a3b8;
+      font-size: 0.83rem;
+      color: #64748b;
     }
 
-    #status.loading { color: #38bdf8; }
-    #status.error   { color: #f87171; }
-    #status.ok      { color: #4ade80; }
+    #status.loading { color: #2563eb; }
+    #status.error   { color: #dc2626; }
+    #status.ok      { color: #16a34a; }
 
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
       border: none;
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       font-weight: 600;
       cursor: pointer;
       transition: opacity 0.15s;
@@ -86,23 +88,23 @@
     .btn:hover { opacity: 0.85; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .btn-primary { background: #0ea5e9; color: #fff; }
+    .btn-primary { background: #2563eb; color: #fff; }
     .btn-success { background: #16a34a; color: #fff; }
-    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+    .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; }
 
     #search {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      color: #e2e8f0;
-      padding: 0.45rem 0.9rem;
-      font-size: 0.875rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      color: #1e293b;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
       width: 220px;
       outline: none;
       transition: border-color 0.15s;
     }
-    #search:focus { border-color: #38bdf8; }
-    #search::placeholder { color: #475569; }
+    #search:focus { border-color: #2563eb; }
+    #search::placeholder { color: #94a3b8; }
 
     table {
       width: 100%;
@@ -110,13 +112,13 @@
     }
 
     thead {
-      background: #0f172a;
+      background: #f1f5f9;
     }
 
     th {
       text-align: left;
-      padding: 0.75rem 1.5rem;
-      font-size: 0.75rem;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.72rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -124,45 +126,46 @@
     }
 
     tbody tr {
-      border-top: 1px solid #1e293b;
+      border-top: 1px solid #f1f5f9;
       transition: background 0.1s;
     }
 
-    tbody tr:hover { background: #263549; }
+    tbody tr:hover { background: #f8fafc; }
 
     td {
-      padding: 0.85rem 1.5rem;
-      font-size: 0.9rem;
+      padding: 0.8rem 1.25rem;
+      font-size: 0.875rem;
       vertical-align: middle;
     }
 
     .email-cell {
       font-weight: 500;
-      color: #e2e8f0;
+      color: #1e293b;
     }
 
     .domain-cell {
-      color: #94a3b8;
-      font-size: 0.82rem;
+      color: #64748b;
+      font-size: 0.8rem;
     }
 
     .disk-cell {
-      color: #94a3b8;
-      font-size: 0.82rem;
+      color: #64748b;
+      font-size: 0.8rem;
       white-space: nowrap;
     }
 
     .empty {
       text-align: center;
       padding: 3rem 1rem;
-      color: #475569;
+      color: #94a3b8;
+      font-size: 0.9rem;
     }
 
     .spinner {
       display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid #38bdf8;
+      width: 13px;
+      height: 13px;
+      border: 2px solid #2563eb;
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
@@ -181,25 +184,27 @@
     }
 
     .toast {
-      background: #1e293b;
-      border: 1px solid #334155;
+      background: #fff;
+      border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 0.75rem 1.1rem;
-      font-size: 0.85rem;
+      padding: 0.7rem 1rem;
+      font-size: 0.83rem;
       max-width: 320px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       animation: fadeIn 0.2s ease;
+      color: #334155;
     }
-    .toast.error { border-color: #f87171; color: #f87171; }
-    .toast.success { border-color: #4ade80; color: #4ade80; }
+    .toast.error { border-color: #fca5a5; color: #dc2626; }
+    .toast.success { border-color: #86efac; color: #16a34a; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     .count-badge {
-      background: #0ea5e9;
+      background: #2563eb;
       color: #fff;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      padding: 0.15rem 0.5rem;
+      padding: 0.12rem 0.45rem;
       border-radius: 999px;
     }
   </style>
@@ -267,8 +272,8 @@
     async function loadEmails() {
       const btn = document.getElementById('btnReload');
       btn.disabled = true;
-      setStatus('<span class="spinner"></span> Carregando...', 'loading');
       document.getElementById('status').innerHTML = '<span class="spinner"></span> Carregando...';
+      document.getElementById('status').className = 'loading';
       document.getElementById('countBadge').style.display = 'none';
       document.getElementById('search').style.display = 'none';
 
@@ -292,7 +297,7 @@
       } catch (err) {
         setStatus('Erro ao carregar', 'error');
         document.getElementById('tableWrapper').innerHTML =
-          `<div class="empty" style="color:#f87171">Erro: ${err.message}</div>`;
+          `<div class="empty" style="color:#dc2626">Erro: ${err.message}</div>`;
         toast(err.message, 'error');
       } finally {
         btn.disabled = false;
