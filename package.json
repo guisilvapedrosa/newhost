@@ -1,0 +1,8 @@
+{
+  "name": "email-accessor-cpanel",
+  "version": "1.0.0",
+  "description": "Acessador de emails cPanel via UAPI - HostGator",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

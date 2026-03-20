@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acessador de Emails — HostGator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    h1 span {
+      color: #38bdf8;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #334155;
+      gap: 1rem;
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #status {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    #status.loading { color: #38bdf8; }
+    #status.error   { color: #f87171; }
+    #status.ok      { color: #4ade80; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary { background: #0ea5e9; color: #fff; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+    #search {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.875rem;
+      width: 220px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #search:focus { border-color: #38bdf8; }
+    #search::placeholder { color: #475569; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #0f172a;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+    }
+
+    tbody tr {
+      border-top: 1px solid #1e293b;
+      transition: background 0.1s;
+    }
+
+    tbody tr:hover { background: #263549; }
+
+    td {
+      padding: 0.85rem 1.5rem;
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    .email-cell {
+      font-weight: 500;
+      color: #e2e8f0;
+    }
+
+    .domain-cell {
+      color: #94a3b8;
+      font-size: 0.82rem;
+    }
+
+    .disk-cell {
+      color: #94a3b8;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #475569;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #38bdf8;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.75rem 1.1rem;
+      font-size: 0.85rem;
+      max-width: 320px;
+      animation: fadeIn 0.2s ease;
+    }
+    .toast.error { border-color: #f87171; color: #f87171; }
+    .toast.success { border-color: #4ade80; color: #4ade80; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .count-badge {
+      background: #0ea5e9;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Acessador de Emails <span>HostGator</span></h1>
+      <p class="subtitle">Acesse qualquer webmail sem precisar da senha</p>
+    </header>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <button class="btn btn-primary" id="btnReload" onclick="loadEmails()">
+            Carregar emails
+          </button>
+          <span id="status"></span>
+          <span id="countBadge" class="count-badge" style="display:none"></span>
+        </div>
+        <input
+          type="text"
+          id="search"
+          placeholder="Filtrar emails..."
+          oninput="renderTable()"
+          style="display:none"
+        />
+      </div>
+
+      <div id="tableWrapper">
+        <div class="empty">Clique em <strong>Carregar emails</strong> para começar.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toasts"></div>
+
+  <script>
+    let allEmails = [];
+
+    function setStatus(msg, type = '') {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = type;
+    }
+
+    function toast(msg, type = '') {
+      const c = document.getElementById('toasts');
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 4000);
+    }
+
+    function fmtDisk(bytes) {
+      if (!bytes || bytes === 0) return '—';
+      if (bytes === 'unlimited') return '∞';
+      const mb = bytes / 1024 / 1024;
+      return mb >= 1024
+        ? (mb / 1024).toFixed(1) + ' GB'
+        : mb.toFixed(1) + ' MB';
+    }
+
+    async function loadEmails() {
+      const btn = document.getElementById('btnReload');
+      btn.disabled = true;
+      setStatus('<span class="spinner"></span> Carregando...', 'loading');
+      document.getElementById('status').innerHTML = '<span class="spinner"></span> Carregando...';
+      document.getElementById('countBadge').style.display = 'none';
+      document.getElementById('search').style.display = 'none';
+
+      try {
+        const res = await fetch('/api/emails');
+        const json = await res.json();
+
+        if (!res.ok || json.error) {
+          throw new Error(json.error || 'Erro desconhecido');
+        }
+
+        allEmails = json.emails || [];
+        setStatus(`${allEmails.length} email(s) encontrado(s)`, 'ok');
+
+        const badge = document.getElementById('countBadge');
+        badge.textContent = allEmails.length;
+        badge.style.display = allEmails.length ? 'inline' : 'none';
+
+        document.getElementById('search').style.display = allEmails.length > 5 ? 'block' : 'none';
+        renderTable();
+      } catch (err) {
+        setStatus('Erro ao carregar', 'error');
+        document.getElementById('tableWrapper').innerHTML =
+          `<div class="empty" style="color:#f87171">Erro: ${err.message}</div>`;
+        toast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderTable() {
+      const q = document.getElementById('search').value.toLowerCase();
+      const filtered = q
+        ? allEmails.filter(e => e.email.toLowerCase().includes(q))
+        : allEmails;
+
+      if (!filtered.length) {
+        document.getElementById('tableWrapper').innerHTML =
+          `<div class="empty">${allEmails.length ? 'Nenhum resultado para "' + q + '"' : 'Nenhum email encontrado.'}</div>`;
+        return;
+      }
+
+      const rows = filtered.map(e => `
+        <tr>
+          <td class="email-cell">${escHtml(e.email)}</td>
+          <td class="domain-cell">${escHtml(e.domain || '')}</td>
+          <td class="disk-cell">${fmtDisk(e.diskused)} / ${fmtDisk(e.diskquota)}</td>
+          <td>
+            <button
+              class="btn btn-success btn-sm"
+              onclick="accessWebmail('${escHtml(e.email)}')"
+            >
+              Acessar Webmail
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('tableWrapper').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Domínio</th>
+              <th>Disco</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    async function accessWebmail(email) {
+      const btns = document.querySelectorAll('button.btn-success');
+      btns.forEach(b => b.disabled = true);
+
+      toast(`Criando sessão para ${email}...`);
+
+      try {
+        const res = await fetch('/api/webmail-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || json.error) {
+          throw new Error(json.error || 'Erro ao criar sessão');
+        }
+
+        const url = json.webmailUrl || json.url;
+
+        if (!url) {
+          throw new Error('URL de sessão não retornada pela API');
+        }
+
+        window.open(url, '_blank', 'noopener,noreferrer');
+        toast(`Webmail aberto para ${email}`, 'success');
+      } catch (err) {
+        toast(err.message, 'error');
+      } finally {
+        btns.forEach(b => b.disabled = false);
+      }
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
