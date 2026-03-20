@@ -61,20 +61,23 @@ module.exports = async (req, res) => {
 
     const sessionData = data.data || {};
 
-    // token já vem como "/cpsessXXXXXXXX", então basta prefixar o host
-    const webmailUrl = sessionData.url ||
-      (sessionData.token
-        ? `https://${CPANEL_HOST}:2096${sessionData.token}/`
-        : null);
+    const hostname = sessionData.hostname || CPANEL_HOST;
+    const token = sessionData.token;       // ex: "/cpsess9123134155"
+    const session = sessionData.session;   // string completa para o POST
 
-    if (!webmailUrl) {
+    if (!token || !session) {
       return res.status(500).json({
-        error: "API não retornou URL de sessão",
+        error: "API não retornou token/session",
         details: sessionData,
       });
     }
 
-    return res.status(200).json({ webmailUrl });
+    // O login deve ser feito via HTTP POST para este endpoint diretamente
+    // pelo browser do usuário (para o cookie ser setado no domínio correto)
+    return res.status(200).json({
+      loginUrl: `https://${hostname}:2096${token}/login`,
+      session,
+    });
   } catch (err) {
     return res.status(500).json({
       error: "Falha ao criar sessão de webmail",

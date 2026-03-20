@@ -366,13 +366,25 @@
           throw new Error(json.error || 'Erro ao criar sessão');
         }
 
-        const url = json.webmailUrl || json.url;
-
-        if (!url) {
-          throw new Error('URL de sessão não retornada pela API');
+        if (!json.loginUrl || !json.session) {
+          throw new Error('Dados de sessão não retornados pela API');
         }
 
-        window.open(url, '_blank', 'noopener,noreferrer');
+        // Submete form POST em nova aba para que o cookie de sessão
+        // seja setado corretamente no domínio do webmail
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = json.loginUrl;
+        form.target = '_blank';
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'session';
+        input.value = json.session;
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+
         toast(`Webmail aberto para ${email}`, 'success');
       } catch (err) {
         toast(err.message, 'error');
