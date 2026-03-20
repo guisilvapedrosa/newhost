@@ -410,7 +410,7 @@
             <td style="color:#64748b;font-size:.78rem">${escHtml(c.data_vencimento||'—')}</td>
             <td style="font-weight:500">${fmtMoney(c.valor)}</td>
             <td>${fmtMoney(c.saldo)}</td>
-            <td style="color:#475569;font-size:.78rem;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escHtml(c.historico||'')}">${escHtml(c.historico||'—')}</td>
+            <td style="color:#475569;font-size:.78rem">${escHtml(c.historico||'—')}</td>
             <td><span class="sit ${sitClass(c.situacao)}">${escHtml(c.situacao||'—')}</span></td>
           </tr>`).join('');
 
