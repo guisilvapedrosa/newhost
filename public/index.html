@@ -273,7 +273,7 @@
     function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function toast(msg, type='') { const c=document.getElementById('toasts'),t=document.createElement('div'); t.className=`toast ${type}`; t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),4000); }
     function dateToBr(d) { if(!d) return ''; const p=d.split('-'); return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : d; }
-    function fmtMoney(v) { const n=parseFloat(v); return isNaN(n)?'—':'R$ '+n.toFixed(2).replace('.',','); }
+    function fmtMoney(v) { const n=parseFloat(v); return isNaN(n)?'—':'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
     /* ── AUTH ── */
     function isAuthed() { return sessionStorage.getItem('_a')==='1'; }
