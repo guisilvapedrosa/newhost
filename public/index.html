@@ -410,10 +410,11 @@
             <td style="color:#64748b;font-size:.78rem">${escHtml(c.data_vencimento||'—')}</td>
             <td style="font-weight:500">${fmtMoney(c.valor)}</td>
             <td>${fmtMoney(c.saldo)}</td>
+            <td style="color:#475569;font-size:.78rem;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escHtml(c.historico||'')}">${escHtml(c.historico||'—')}</td>
             <td><span class="sit ${sitClass(c.situacao)}">${escHtml(c.situacao||'—')}</span></td>
           </tr>`).join('');
 
-        document.getElementById('contasTableWrapper').innerHTML=`<table><thead><tr><th>Cliente</th><th>Doc</th><th>Emissão</th><th>Vencimento</th><th>Valor</th><th>Saldo</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table>`;
+        document.getElementById('contasTableWrapper').innerHTML=`<table><thead><tr><th>Cliente</th><th>Doc</th><th>Emissão</th><th>Vencimento</th><th>Valor</th><th>Saldo</th><th>Histórico</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table>`;
 
         if(contasTotalPag>1) {
           document.getElementById('contasPagination').style.display='flex';
