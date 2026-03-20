@@ -59,14 +59,14 @@ module.exports = async (req, res) => {
       });
     }
 
-    // A API retorna a URL de acesso direto ao webmail
+    // Debug: retorna resposta completa da UAPI para diagnóstico
     const sessionData = data.data || {};
 
     return res.status(200).json({
+      _raw: data,
       url: sessionData.url || null,
       login: sessionData.login || null,
       token: sessionData.token || null,
-      // Fallback: monta a URL manualmente se a API retornar o token
       webmailUrl:
         sessionData.url ||
         (sessionData.token
