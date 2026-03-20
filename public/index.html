@@ -6,305 +6,124 @@
   <title>Painel</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f8fafc;
-      color: #1e293b;
-      min-height: 100vh;
+      background: #f8fafc; color: #1e293b; min-height: 100vh;
     }
 
-    /* ── LOGIN ── */
-    #loginScreen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 1rem;
-    }
+    /* LOGIN */
+    #loginScreen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:1rem; }
+    .login-box { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:2rem 2.25rem; width:100%; max-width:340px; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+    .login-box h2 { font-size:1.1rem; font-weight:600; color:#0f172a; margin-bottom:1.5rem; }
+    .field { margin-bottom:1rem; }
+    .field label { display:block; font-size:.78rem; color:#64748b; margin-bottom:.35rem; }
+    .field input { width:100%; border:1px solid #e2e8f0; border-radius:6px; padding:.5rem .75rem; font-size:.875rem; color:#1e293b; background:#f8fafc; outline:none; transition:border-color .15s; }
+    .field input:focus { border-color:#94a3b8; background:#fff; }
+    #loginError { font-size:.78rem; color:#dc2626; margin-bottom:.75rem; min-height:1rem; }
+    .btn-login { width:100%; padding:.55rem; border:none; border-radius:6px; background:#334155; color:#fff; font-size:.85rem; font-weight:500; cursor:pointer; transition:background .15s; }
+    .btn-login:hover { background:#1e293b; }
+    .btn-login:disabled { opacity:.5; cursor:not-allowed; }
 
-    .login-box {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 2rem 2.25rem;
-      width: 100%;
-      max-width: 340px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
+    /* DASHBOARD */
+    #dashboard { display:none; padding:2rem 1rem; }
+    .container { max-width:960px; margin:0 auto; }
+    header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+    .header-left h1 { font-size:1.15rem; font-weight:600; color:#0f172a; }
+    .header-left p { font-size:.8rem; color:#94a3b8; margin-top:.2rem; }
+    .header-right { display:flex; align-items:center; gap:.6rem; }
 
-    .login-box h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 1.5rem;
-    }
+    /* NAV TABS */
+    .nav-tabs { display:flex; gap:.35rem; margin-bottom:1.25rem; }
+    .nav-tab { padding:.4rem .9rem; border-radius:6px; border:1px solid #e2e8f0; background:#fff; color:#94a3b8; font-size:.8rem; font-weight:500; cursor:pointer; transition:all .15s; }
+    .nav-tab.active { background:#334155; color:#fff; border-color:#334155; }
+    .nav-tab:hover:not(.active) { border-color:#cbd5e1; color:#64748b; }
 
-    .field {
-      margin-bottom: 1rem;
-    }
+    .section { display:none; }
+    .section.active { display:block; }
 
-    .field label {
-      display: block;
-      font-size: 0.78rem;
-      color: #64748b;
-      margin-bottom: 0.35rem;
-    }
+    /* CARD */
+    .card { background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+    .card-header { display:flex; align-items:center; justify-content:space-between; padding:.85rem 1.25rem; border-bottom:1px solid #f1f5f9; gap:1rem; flex-wrap:wrap; }
+    .card-header-left { display:flex; align-items:center; gap:.65rem; }
 
-    .field input {
-      width: 100%;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.875rem;
-      color: #1e293b;
-      background: #f8fafc;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .field input:focus { border-color: #94a3b8; background: #fff; }
+    .status { font-size:.8rem; color:#94a3b8; }
+    .status.loading { color:#475569; }
+    .status.error { color:#dc2626; }
+    .status.ok { color:#475569; }
 
-    #loginError {
-      font-size: 0.78rem;
-      color: #dc2626;
-      margin-bottom: 0.75rem;
-      min-height: 1rem;
-    }
+    .btn { display:inline-flex; align-items:center; gap:.35rem; padding:.4rem .85rem; border-radius:6px; border:1px solid transparent; font-size:.8rem; font-weight:500; cursor:pointer; transition:opacity .15s,background .15s; background:none; }
+    .btn:hover { opacity:.8; }
+    .btn:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-neutral { background:#f1f5f9; border-color:#e2e8f0; color:#475569; }
+    .btn-open { background:#f8fafc; border-color:#e2e8f0; color:#334155; font-size:.75rem; padding:.3rem .6rem; }
+    .btn-open:hover { background:#f1f5f9; }
 
-    .btn-login {
-      width: 100%;
-      padding: 0.55rem;
-      border: none;
-      border-radius: 6px;
-      background: #334155;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .btn-login:hover { background: #1e293b; }
-    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-eye { background:#f8fafc; border:1px solid #e2e8f0; color:#94a3b8; padding:.4rem .7rem; border-radius:6px; cursor:pointer; font-size:.85rem; transition:all .15s; }
+    .btn-eye.active { background:#fef9c3; border-color:#fde68a; color:#92400e; }
+    .btn-logout { background:none; border:1px solid #e2e8f0; color:#94a3b8; padding:.4rem .7rem; border-radius:6px; cursor:pointer; font-size:.75rem; transition:all .15s; }
+    .btn-logout:hover { border-color:#cbd5e1; color:#64748b; }
 
-    /* ── DASHBOARD ── */
-    #dashboard {
-      display: none;
-      padding: 2rem 1rem;
-    }
+    .search-input { background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; color:#1e293b; padding:.38rem .8rem; font-size:.82rem; width:200px; outline:none; transition:border-color .15s; }
+    .search-input:focus { border-color:#94a3b8; }
+    .search-input::placeholder { color:#cbd5e1; }
 
-    .container { max-width: 900px; margin: 0 auto; }
+    table { width:100%; border-collapse:collapse; }
+    thead { background:#f8fafc; }
+    th { text-align:left; padding:.6rem 1.25rem; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:#94a3b8; }
+    tbody tr { border-top:1px solid #f8fafc; transition:background .1s; }
+    tbody tr:hover { background:#fafafa; }
+    tbody tr.clickable { cursor:pointer; }
+    td { padding:.75rem 1.25rem; font-size:.855rem; vertical-align:middle; }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
+    .email-cell { font-weight:400; color:#334155; }
+    .domain-cell { color:#94a3b8; font-size:.78rem; }
+    .disk-cell { color:#94a3b8; font-size:.78rem; white-space:nowrap; }
+    .empty { text-align:center; padding:3rem 1rem; color:#cbd5e1; font-size:.875rem; }
+    .spinner { display:inline-block; width:12px; height:12px; border:2px solid #cbd5e1; border-top-color:#475569; border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .count-badge { background:#e2e8f0; color:#64748b; font-size:.68rem; font-weight:600; padding:.1rem .42rem; border-radius:999px; }
 
-    .header-left h1 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #0f172a;
-    }
+    /* SITUAÇÃO BADGES */
+    .sit { font-size:.72rem; font-weight:600; padding:.15rem .45rem; border-radius:4px; text-transform:capitalize; }
+    .sit-aberto { background:#fef3c7; color:#92400e; }
+    .sit-pago { background:#dcfce7; color:#166534; }
+    .sit-cancelada { background:#fee2e2; color:#991b1b; }
+    .sit-parcial { background:#e0e7ff; color:#3730a3; }
 
-    .header-left p {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin-top: 0.2rem;
-    }
+    /* FILTERS */
+    .filters { display:flex; flex-wrap:wrap; gap:.5rem; padding:.85rem 1.25rem; border-bottom:1px solid #f1f5f9; align-items:flex-end; }
+    .filter-field { display:flex; flex-direction:column; gap:.2rem; }
+    .filter-field label { font-size:.68rem; color:#94a3b8; font-weight:500; }
+    .filter-field input, .filter-field select { border:1px solid #e2e8f0; border-radius:5px; padding:.35rem .6rem; font-size:.78rem; color:#1e293b; background:#f8fafc; outline:none; }
+    .filter-field input:focus, .filter-field select:focus { border-color:#94a3b8; }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
+    /* PAGINATION */
+    .pagination { display:flex; align-items:center; justify-content:center; gap:.5rem; padding:.75rem; border-top:1px solid #f1f5f9; }
+    .pagination button { padding:.3rem .65rem; border:1px solid #e2e8f0; border-radius:5px; background:#fff; color:#475569; font-size:.75rem; cursor:pointer; }
+    .pagination button:disabled { opacity:.4; cursor:not-allowed; }
+    .pagination span { font-size:.75rem; color:#94a3b8; }
 
-    .card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
+    /* MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:1000; align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:#fff; border-radius:10px; max-width:600px; width:100%; max-height:85vh; overflow-y:auto; box-shadow:0 8px 30px rgba(0,0,0,.12); }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid #f1f5f9; }
+    .modal-header h3 { font-size:.95rem; font-weight:600; color:#0f172a; }
+    .modal-close { background:none; border:none; font-size:1.2rem; color:#94a3b8; cursor:pointer; padding:.2rem; }
+    .modal-close:hover { color:#475569; }
+    .modal-body { padding:1.25rem; }
+    .detail-section { margin-bottom:1.25rem; }
+    .detail-section h4 { font-size:.78rem; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:.04em; margin-bottom:.6rem; border-bottom:1px solid #f1f5f9; padding-bottom:.35rem; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.5rem .75rem; }
+    .detail-item label { display:block; font-size:.68rem; color:#94a3b8; }
+    .detail-item span { font-size:.82rem; color:#1e293b; }
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.85rem 1.25rem;
-      border-bottom: 1px solid #f1f5f9;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .card-header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-
-    #status {
-      font-size: 0.8rem;
-      color: #94a3b8;
-    }
-    #status.loading { color: #475569; }
-    #status.error   { color: #dc2626; }
-    #status.ok      { color: #475569; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.4rem 0.85rem;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: opacity 0.15s, background 0.15s;
-      background: none;
-    }
-    .btn:hover { opacity: 0.8; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .btn-neutral {
-      background: #f1f5f9;
-      border-color: #e2e8f0;
-      color: #475569;
-    }
-    .btn-action {
-      background: #fff;
-      border-color: #e2e8f0;
-      color: #475569;
-    }
-    .btn-open {
-      background: #f8fafc;
-      border-color: #e2e8f0;
-      color: #334155;
-      font-size: 0.75rem;
-      padding: 0.3rem 0.6rem;
-    }
-    .btn-open:hover { background: #f1f5f9; }
-
-    .btn-eye {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      color: #94a3b8;
-      padding: 0.4rem 0.7rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.15s;
-    }
-    .btn-eye.active {
-      background: #fef9c3;
-      border-color: #fde68a;
-      color: #92400e;
-    }
-
-    .btn-logout {
-      background: none;
-      border: 1px solid #e2e8f0;
-      color: #94a3b8;
-      padding: 0.4rem 0.7rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      transition: all 0.15s;
-    }
-    .btn-logout:hover { border-color: #cbd5e1; color: #64748b; }
-
-    #search {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      color: #1e293b;
-      padding: 0.38rem 0.8rem;
-      font-size: 0.82rem;
-      width: 200px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    #search:focus { border-color: #94a3b8; }
-    #search::placeholder { color: #cbd5e1; }
-
-    table { width: 100%; border-collapse: collapse; }
-
-    thead { background: #f8fafc; }
-
-    th {
-      text-align: left;
-      padding: 0.6rem 1.25rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #94a3b8;
-    }
-
-    tbody tr { border-top: 1px solid #f8fafc; transition: background 0.1s; }
-    tbody tr:hover { background: #fafafa; }
-
-    td {
-      padding: 0.75rem 1.25rem;
-      font-size: 0.855rem;
-      vertical-align: middle;
-    }
-
-    .email-cell { font-weight: 400; color: #334155; }
-    .domain-cell { color: #94a3b8; font-size: 0.78rem; }
-    .disk-cell { color: #94a3b8; font-size: 0.78rem; white-space: nowrap; }
-
-    .empty {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #cbd5e1;
-      font-size: 0.875rem;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 12px; height: 12px;
-      border: 2px solid #cbd5e1;
-      border-top-color: #475569;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .count-badge {
-      background: #e2e8f0;
-      color: #64748b;
-      font-size: 0.68rem;
-      font-weight: 600;
-      padding: 0.1rem 0.42rem;
-      border-radius: 999px;
-    }
-
-    .toast-container {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      z-index: 9999;
-    }
-    .toast {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 0.65rem 1rem;
-      font-size: 0.8rem;
-      max-width: 300px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      animation: fadeIn 0.2s ease;
-      color: #475569;
-    }
-    .toast.error { border-color: #fca5a5; color: #dc2626; }
-    .toast.success { border-color: #bbf7d0; color: #15803d; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    /* TOAST */
+    .toast-container { position:fixed; bottom:1.5rem; right:1.5rem; display:flex; flex-direction:column; gap:.5rem; z-index:9999; }
+    .toast { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:.65rem 1rem; font-size:.8rem; max-width:300px; box-shadow:0 2px 8px rgba(0,0,0,.07); animation:fadeIn .2s ease; color:#475569; }
+    .toast.error { border-color:#fca5a5; color:#dc2626; }
+    .toast.success { border-color:#bbf7d0; color:#15803d; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
   </style>
 </head>
 <body>
@@ -331,40 +150,103 @@
           <p>Gerenciamento interno</p>
         </div>
         <div class="header-right">
-          <button class="btn-eye" id="btnEye" title="Modo disfarce" onclick="toggleDisguise()">👁</button>
+          <button class="btn-eye" id="btnEye" title="Modo disfarce" onclick="toggleDisguise()">&#128065;</button>
           <button class="btn-logout" onclick="doLogout()">Sair</button>
         </div>
       </header>
 
-      <div class="card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <button class="btn btn-neutral" id="btnReload" onclick="loadEmails()">Atualizar</button>
-            <span id="status"></span>
-            <span id="countBadge" class="count-badge" style="display:none"></span>
+      <!-- NAV -->
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="emails" onclick="switchTab('emails')">Registros</button>
+        <button class="nav-tab" data-tab="contas" onclick="switchTab('contas')">Financeiro</button>
+      </div>
+
+      <!-- ═══ SEÇÃO EMAILS ═══ -->
+      <div id="emailSection" class="section active">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <button class="btn btn-neutral" id="btnReload" onclick="loadEmails()">Atualizar</button>
+              <span id="emailStatus" class="status"></span>
+              <span id="countBadge" class="count-badge" style="display:none"></span>
+            </div>
+            <input type="text" id="emailSearch" class="search-input" placeholder="Buscar..." oninput="renderEmailTable()" style="display:none" />
           </div>
-          <input type="text" id="search" placeholder="Buscar..." oninput="renderTable()" style="display:none" />
-        </div>
-        <div id="tableWrapper">
-          <div class="empty">Clique em <strong>Atualizar</strong> para carregar.</div>
+          <div id="emailTableWrapper">
+            <div class="empty">Clique em <strong>Atualizar</strong> para carregar.</div>
+          </div>
         </div>
       </div>
+
+      <!-- ═══ SEÇÃO CONTAS A PAGAR ═══ -->
+      <div id="contasSection" class="section">
+        <div class="card">
+          <div class="filters">
+            <div class="filter-field">
+              <label>Cliente</label>
+              <input type="text" id="fCliente" placeholder="Nome..." />
+            </div>
+            <div class="filter-field">
+              <label>Documento</label>
+              <input type="text" id="fDoc" placeholder="Nº doc..." />
+            </div>
+            <div class="filter-field">
+              <label>Situação</label>
+              <select id="fSituacao">
+                <option value="">Todas</option>
+                <option value="aberto">Aberto</option>
+                <option value="pago">Pago</option>
+                <option value="parcial">Parcial</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label>Venc. de</label>
+              <input type="date" id="fVencIni" />
+            </div>
+            <div class="filter-field">
+              <label>Venc. até</label>
+              <input type="date" id="fVencFim" />
+            </div>
+            <button class="btn btn-neutral" id="btnBuscarContas" onclick="buscarContas(1)">Buscar</button>
+            <span id="contasStatus" class="status"></span>
+          </div>
+          <div id="contasTableWrapper">
+            <div class="empty">Use os filtros acima para pesquisar.</div>
+          </div>
+          <div id="contasPagination" class="pagination" style="display:none">
+            <button onclick="buscarContas(contasPagAtual-1)">&laquo; Anterior</button>
+            <span id="contasPagInfo"></span>
+            <button onclick="buscarContas(contasPagAtual+1)">Próxima &raquo;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DETALHE -->
+  <div id="modal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">Detalhes</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
 
   <div class="toast-container" id="toasts"></div>
 
   <script>
+    /* ── STATE ── */
     let allEmails = [];
     let disguise = false;
     const fakeMap = new Map();
+    let contasPagAtual = 1;
+    let contasTotalPag = 1;
 
-    const firstNames = ['carlos','ana','pedro','julia','lucas','mariana','gabriel','amanda',
-      'rafael','fernanda','bruno','patricia','diego','camila','thiago','beatriz','eduardo',
-      'leticia','felipe','vanessa','rodrigo','priscila','marcelo','tatiana','leandro'];
-    const lastNames = ['silva','santos','oliveira','souza','rodrigues','ferreira','alves',
-      'pereira','lima','gomes','costa','ribeiro','martins','carvalho','rocha','nascimento',
-      'lima','araújo','moreira','nunes','cardoso','barbosa','correia','moura','freitas'];
+    const firstNames = ['carlos','ana','pedro','julia','lucas','mariana','gabriel','amanda','rafael','fernanda','bruno','patricia','diego','camila','thiago','beatriz','eduardo','leticia','felipe','vanessa','rodrigo','priscila','marcelo','tatiana','leandro'];
+    const lastNames = ['silva','santos','oliveira','souza','rodrigues','ferreira','alves','pereira','lima','gomes','costa','ribeiro','martins','carvalho','rocha','nascimento','araújo','moreira','nunes','cardoso','barbosa','correia','moura','freitas'];
 
     function fakeName(email) {
       if (fakeMap.has(email)) return fakeMap.get(email);
@@ -376,206 +258,213 @@
       return fake;
     }
 
-    // ── AUTH ──
-    function isAuthed() { return sessionStorage.getItem('_a') === '1'; }
+    function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function toast(msg, type='') { const c=document.getElementById('toasts'),t=document.createElement('div'); t.className=`toast ${type}`; t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),4000); }
+    function dateToBr(d) { if(!d) return ''; const p=d.split('-'); return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : d; }
+    function fmtMoney(v) { const n=parseFloat(v); return isNaN(n)?'—':'R$ '+n.toFixed(2).replace('.',','); }
 
-    function showDashboard() {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-    }
-
-    function showLogin() {
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('dashboard').style.display = 'none';
-    }
+    /* ── AUTH ── */
+    function isAuthed() { return sessionStorage.getItem('_a')==='1'; }
+    function showDashboard() { document.getElementById('loginScreen').style.display='none'; document.getElementById('dashboard').style.display='block'; }
+    function showLogin() { document.getElementById('loginScreen').style.display='flex'; document.getElementById('dashboard').style.display='none'; }
 
     async function doLogin() {
-      const pwd = document.getElementById('pwdInput').value;
-      const btn = document.getElementById('btnLogin');
-      const err = document.getElementById('loginError');
-      if (!pwd) return;
-
-      btn.disabled = true;
-      err.textContent = '';
-
+      const pwd=document.getElementById('pwdInput').value, btn=document.getElementById('btnLogin'), err=document.getElementById('loginError');
+      if(!pwd) return;
+      btn.disabled=true; err.textContent='';
       try {
-        const res = await fetch('/api/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: pwd }),
-        });
-        const json = await res.json();
-        if (json.ok) {
-          sessionStorage.setItem('_a', '1');
-          showDashboard();
-        } else {
-          err.textContent = 'Senha incorreta.';
-          document.getElementById('pwdInput').value = '';
-          document.getElementById('pwdInput').focus();
-        }
-      } catch {
-        err.textContent = 'Erro de conexão.';
-      } finally {
-        btn.disabled = false;
-      }
+        const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+        const json=await res.json();
+        if(json.ok){sessionStorage.setItem('_a','1');showDashboard();}
+        else{err.textContent='Senha incorreta.';document.getElementById('pwdInput').value='';document.getElementById('pwdInput').focus();}
+      } catch{err.textContent='Erro de conexão.';}
+      finally{btn.disabled=false;}
     }
 
-    function doLogout() {
-      sessionStorage.removeItem('_a');
-      allEmails = [];
-      fakeMap.clear();
-      showLogin();
+    function doLogout() { sessionStorage.removeItem('_a'); allEmails=[]; fakeMap.clear(); showLogin(); }
+    document.getElementById('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+    /* ── TABS ── */
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      document.getElementById(tab==='emails'?'emailSection':'contasSection').classList.add('active');
     }
 
-    document.getElementById('pwdInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') doLogin();
-    });
+    /* ── DISGUISE ── */
+    function toggleDisguise() { disguise=!disguise; document.getElementById('btnEye').classList.toggle('active',disguise); renderEmailTable(); }
 
-    // ── DISGUISE ──
-    function toggleDisguise() {
-      disguise = !disguise;
-      const btn = document.getElementById('btnEye');
-      btn.classList.toggle('active', disguise);
-      renderTable();
-    }
+    /* ════════════════ EMAILS ════════════════ */
+    function setEmailStatus(msg,type='') { const el=document.getElementById('emailStatus'); el.innerHTML=msg; el.className='status '+type; }
 
-    // ── EMAILS ──
-    function setStatus(msg, type = '') {
-      const el = document.getElementById('status');
-      el.innerHTML = msg;
-      el.className = type;
-    }
-
-    function toast(msg, type = '') {
-      const c = document.getElementById('toasts');
-      const t = document.createElement('div');
-      t.className = `toast ${type}`;
-      t.textContent = msg;
-      c.appendChild(t);
-      setTimeout(() => t.remove(), 4000);
-    }
-
-    function fmtDisk(bytes) {
-      if (!bytes || bytes === 0) return '—';
-      if (bytes === 'unlimited') return '∞';
-      const mb = bytes / 1024 / 1024;
-      return mb >= 1024 ? (mb / 1024).toFixed(1) + ' GB' : mb.toFixed(1) + ' MB';
-    }
+    function fmtDisk(bytes) { if(!bytes||bytes===0)return '—'; if(bytes==='unlimited')return '∞'; const mb=bytes/1024/1024; return mb>=1024?(mb/1024).toFixed(1)+' GB':mb.toFixed(1)+' MB'; }
 
     async function loadEmails() {
-      const btn = document.getElementById('btnReload');
-      btn.disabled = true;
-      setStatus('<span class="spinner"></span>', 'loading');
-      document.getElementById('countBadge').style.display = 'none';
-      document.getElementById('search').style.display = 'none';
-
+      const btn=document.getElementById('btnReload'); btn.disabled=true;
+      setEmailStatus('<span class="spinner"></span>','loading');
+      document.getElementById('countBadge').style.display='none';
+      document.getElementById('emailSearch').style.display='none';
       try {
-        const res = await fetch('/api/emails');
-        const json = await res.json();
-        if (!res.ok || json.error) throw new Error(json.error || 'Erro desconhecido');
-
-        allEmails = json.emails || [];
-        setStatus(`${allEmails.length} registros`, 'ok');
-
-        const badge = document.getElementById('countBadge');
-        badge.textContent = allEmails.length;
-        badge.style.display = allEmails.length ? 'inline' : 'none';
-        document.getElementById('search').style.display = allEmails.length > 5 ? 'block' : 'none';
-        renderTable();
-      } catch (err) {
-        setStatus('Erro', 'error');
-        document.getElementById('tableWrapper').innerHTML =
-          `<div class="empty" style="color:#dc2626">${err.message}</div>`;
-        toast(err.message, 'error');
-      } finally {
-        btn.disabled = false;
-      }
+        const res=await fetch('/api/emails'); const json=await res.json();
+        if(!res.ok||json.error) throw new Error(json.error||'Erro desconhecido');
+        allEmails=json.emails||[];
+        setEmailStatus(`${allEmails.length} registros`,'ok');
+        const badge=document.getElementById('countBadge'); badge.textContent=allEmails.length; badge.style.display=allEmails.length?'inline':'none';
+        document.getElementById('emailSearch').style.display=allEmails.length>5?'block':'none';
+        renderEmailTable();
+      } catch(err){ setEmailStatus('Erro','error'); document.getElementById('emailTableWrapper').innerHTML=`<div class="empty" style="color:#dc2626">${err.message}</div>`; toast(err.message,'error'); }
+      finally{ btn.disabled=false; }
     }
 
-    function renderTable() {
-      const q = document.getElementById('search').value.toLowerCase();
-      const filtered = q
-        ? allEmails.filter(e => e.email.toLowerCase().includes(q))
-        : allEmails;
-
-      if (!filtered.length) {
-        document.getElementById('tableWrapper').innerHTML =
-          `<div class="empty">${allEmails.length ? 'Sem resultados.' : 'Nenhum registro.'}</div>`;
-        return;
-      }
-
-      const rows = filtered.map(e => {
-        const display = disguise ? fakeName(e.email) : escHtml(e.email);
-        const displayDomain = disguise ? 'gmail.com' : escHtml(e.domain || '');
-        return `
-          <tr>
-            <td class="email-cell">${display}</td>
-            <td class="domain-cell">${displayDomain}</td>
-            <td class="disk-cell">${fmtDisk(e.diskused)} / ${fmtDisk(e.diskquota)}</td>
-            <td>
-              <button class="btn btn-open" onclick="accessWebmail('${escHtml(e.email)}')">
-                Abrir →
-              </button>
-            </td>
-          </tr>`;
+    function renderEmailTable() {
+      const q=document.getElementById('emailSearch').value.toLowerCase();
+      const filtered=q?allEmails.filter(e=>e.email.toLowerCase().includes(q)):allEmails;
+      if(!filtered.length){ document.getElementById('emailTableWrapper').innerHTML=`<div class="empty">${allEmails.length?'Sem resultados.':'Nenhum registro.'}</div>`; return; }
+      const rows=filtered.map(e=>{
+        const display=disguise?fakeName(e.email):escHtml(e.email);
+        const displayDomain=disguise?'gmail.com':escHtml(e.domain||'');
+        return `<tr><td class="email-cell">${display}</td><td class="domain-cell">${displayDomain}</td><td class="disk-cell">${fmtDisk(e.diskused)} / ${fmtDisk(e.diskquota)}</td><td><button class="btn btn-open" onclick="accessWebmail('${escHtml(e.email)}')">Abrir →</button></td></tr>`;
       }).join('');
-
-      document.getElementById('tableWrapper').innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Conta</th>
-              <th>Domínio</th>
-              <th>Uso</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>`;
+      document.getElementById('emailTableWrapper').innerHTML=`<table><thead><tr><th>Conta</th><th>Domínio</th><th>Uso</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
     }
 
     async function accessWebmail(email) {
-      const btns = document.querySelectorAll('.btn-open');
-      btns.forEach(b => b.disabled = true);
-      toast('Abrindo...');
+      const btns=document.querySelectorAll('.btn-open'); btns.forEach(b=>b.disabled=true); toast('Abrindo...');
+      try {
+        const res=await fetch('/api/webmail-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+        const json=await res.json();
+        if(!res.ok||json.error) throw new Error(json.error||'Erro ao criar sessão');
+        if(!json.loginUrl||!json.session) throw new Error('Dados de sessão inválidos');
+        const form=document.createElement('form'); form.method='POST'; form.action=json.loginUrl; form.target='_blank';
+        const input=document.createElement('input'); input.type='hidden'; input.name='session'; input.value=json.session;
+        form.appendChild(input); document.body.appendChild(form); form.submit(); document.body.removeChild(form);
+      } catch(err){ toast(err.message,'error'); }
+      finally{ btns.forEach(b=>b.disabled=false); }
+    }
+
+    /* ════════════════ CONTAS A PAGAR ════════════════ */
+    function setContasStatus(msg,type='') { const el=document.getElementById('contasStatus'); el.innerHTML=msg; el.className='status '+type; }
+
+    function sitClass(s) { const m={'aberto':'sit-aberto','pago':'sit-pago','cancelada':'sit-cancelada','parcial':'sit-parcial'}; return m[s]||''; }
+
+    async function buscarContas(pagina) {
+      if(pagina<1) return;
+      const cliente=document.getElementById('fCliente').value.trim();
+      const doc=document.getElementById('fDoc').value.trim();
+      const situacao=document.getElementById('fSituacao').value;
+      const vencIni=document.getElementById('fVencIni').value;
+      const vencFim=document.getElementById('fVencFim').value;
+
+      if(!cliente && !doc && !situacao && !vencIni && !vencFim) { toast('Informe ao menos um filtro.','error'); return; }
+
+      const btn=document.getElementById('btnBuscarContas'); btn.disabled=true;
+      setContasStatus('<span class="spinner"></span>','loading');
+      document.getElementById('contasPagination').style.display='none';
+
+      const body = {};
+      if(cliente) body.nome_cliente=cliente;
+      if(doc) body.numero_doc=doc;
+      if(situacao) body.situacao=situacao;
+      if(vencIni) body.data_ini_vencimento=dateToBr(vencIni);
+      if(vencFim) body.data_fim_vencimento=dateToBr(vencFim);
+      body.pagina=pagina;
 
       try {
-        const res = await fetch('/api/webmail-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const json = await res.json();
-        if (!res.ok || json.error) throw new Error(json.error || 'Erro ao criar sessão');
-        if (!json.loginUrl || !json.session) throw new Error('Dados de sessão inválidos');
+        const res=await fetch('/api/contas-pagar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const json=await res.json();
+        if(json.error && !json.ok) throw new Error(json.error);
+        if(!json.ok) throw new Error(json.error||'Erro desconhecido');
 
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = json.loginUrl;
-        form.target = '_blank';
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'session';
-        input.value = json.session;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
-      } catch (err) {
-        toast(err.message, 'error');
-      } finally {
-        btns.forEach(b => b.disabled = false);
-      }
+        contasPagAtual=parseInt(json.pagina)||1;
+        contasTotalPag=parseInt(json.numero_paginas)||1;
+        const contas=json.contas||[];
+
+        if(!contas.length) {
+          setContasStatus('Sem resultados','ok');
+          document.getElementById('contasTableWrapper').innerHTML='<div class="empty">Nenhum registro encontrado.</div>';
+          return;
+        }
+
+        setContasStatus(`${contas.length} registros`,'ok');
+
+        const rows=contas.map(c=>`
+          <tr class="clickable" onclick="verDetalhe(${c.id})">
+            <td style="color:#334155;font-weight:500">${escHtml(c.nome_cliente||'—')}</td>
+            <td style="color:#64748b;font-size:.78rem">${escHtml(c.numero_doc||'—')}</td>
+            <td style="color:#64748b;font-size:.78rem">${escHtml(c.data_emissao||'—')}</td>
+            <td style="color:#64748b;font-size:.78rem">${escHtml(c.data_vencimento||'—')}</td>
+            <td style="font-weight:500">${fmtMoney(c.valor)}</td>
+            <td>${fmtMoney(c.saldo)}</td>
+            <td><span class="sit ${sitClass(c.situacao)}">${escHtml(c.situacao||'—')}</span></td>
+          </tr>`).join('');
+
+        document.getElementById('contasTableWrapper').innerHTML=`<table><thead><tr><th>Cliente</th><th>Doc</th><th>Emissão</th><th>Vencimento</th><th>Valor</th><th>Saldo</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+        if(contasTotalPag>1) {
+          document.getElementById('contasPagination').style.display='flex';
+          document.getElementById('contasPagInfo').textContent=`Página ${contasPagAtual} de ${contasTotalPag}`;
+          const pagBtns=document.getElementById('contasPagination').querySelectorAll('button');
+          pagBtns[0].disabled=contasPagAtual<=1;
+          pagBtns[1].disabled=contasPagAtual>=contasTotalPag;
+        }
+      } catch(err){ setContasStatus('Erro','error'); document.getElementById('contasTableWrapper').innerHTML=`<div class="empty" style="color:#dc2626">${err.message}</div>`; toast(err.message,'error'); }
+      finally{ btn.disabled=false; }
     }
 
-    function escHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    async function verDetalhe(id) {
+      document.getElementById('modalTitle').textContent='Carregando...';
+      document.getElementById('modalBody').innerHTML='<div style="text-align:center;padding:2rem"><span class="spinner"></span></div>';
+      document.getElementById('modal').classList.add('open');
+
+      try {
+        const res=await fetch('/api/conta-pagar-detalhe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+        const json=await res.json();
+        if(!json.ok) throw new Error(json.error||'Erro ao obter detalhe');
+        const c=json.conta;
+
+        document.getElementById('modalTitle').textContent=`Conta #${c.id}`;
+
+        const cli=c.cliente||{};
+        const ocorrencias={'U':'Única','P':'Parcelada','W':'Semanal','M':'Mensal','T':'Trimestral','S':'Semestral','A':'Anual'};
+
+        document.getElementById('modalBody').innerHTML=`
+          <div class="detail-section">
+            <h4>Dados da conta</h4>
+            <div class="detail-grid">
+              <div class="detail-item"><label>Emissão</label><span>${escHtml(c.data||'—')}</span></div>
+              <div class="detail-item"><label>Vencimento</label><span>${escHtml(c.vencimento||'—')}</span></div>
+              <div class="detail-item"><label>Valor</label><span>${fmtMoney(c.valor)}</span></div>
+              <div class="detail-item"><label>Saldo</label><span>${fmtMoney(c.saldo)}</span></div>
+              <div class="detail-item"><label>Nº Documento</label><span>${escHtml(c.nro_documento||'—')}</span></div>
+              <div class="detail-item"><label>Competência</label><span>${escHtml(c.competencia||'—')}</span></div>
+              <div class="detail-item"><label>Situação</label><span class="sit ${sitClass(c.situacao)}">${escHtml(c.situacao||'—')}</span></div>
+              <div class="detail-item"><label>Ocorrência</label><span>${ocorrencias[c.ocorrencia]||c.ocorrencia||'—'}</span></div>
+              ${c.categoria?`<div class="detail-item"><label>Categoria</label><span>${escHtml(c.categoria)}</span></div>`:''}
+              ${c.numero_parcelas?`<div class="detail-item"><label>Parcelas</label><span>${c.numero_parcelas}</span></div>`:''}
+              ${c.dia_vencimento?`<div class="detail-item"><label>Dia vencimento</label><span>${c.dia_vencimento}</span></div>`:''}
+            </div>
+            ${c.historico?`<div style="margin-top:.75rem"><label style="font-size:.68rem;color:#94a3b8;display:block">Histórico</label><span style="font-size:.82rem;color:#1e293b">${escHtml(c.historico)}</span></div>`:''}
+          </div>
+          <div class="detail-section">
+            <h4>Cliente</h4>
+            <div class="detail-grid">
+              <div class="detail-item"><label>Nome</label><span>${escHtml(cli.nome||'—')}</span></div>
+              <div class="detail-item"><label>CPF/CNPJ</label><span>${escHtml(cli.cpf_cnpj||'—')}</span></div>
+              ${cli.tipo_pessoa?`<div class="detail-item"><label>Tipo</label><span>${cli.tipo_pessoa==='F'?'Física':cli.tipo_pessoa==='J'?'Jurídica':'Estrangeiro'}</span></div>`:''}
+              ${cli.codigo?`<div class="detail-item"><label>Código</label><span>${escHtml(cli.codigo)}</span></div>`:''}
+              ${cli.fone?`<div class="detail-item"><label>Telefone</label><span>${escHtml(cli.fone)}</span></div>`:''}
+              ${cli.email?`<div class="detail-item"><label>Email</label><span>${escHtml(cli.email)}</span></div>`:''}
+            </div>
+            ${cli.endereco?`<div style="margin-top:.75rem"><label style="font-size:.68rem;color:#94a3b8;display:block">Endereço</label><span style="font-size:.82rem;color:#1e293b">${escHtml(cli.endereco)}${cli.numero?', '+escHtml(cli.numero):''}${cli.complemento?' - '+escHtml(cli.complemento):''}${cli.bairro?' · '+escHtml(cli.bairro):''}${cli.cidade?' · '+escHtml(cli.cidade):''}${cli.uf?'/'+escHtml(cli.uf):''}${cli.cep?' · CEP '+escHtml(cli.cep):''}</span></div>`:''}
+          </div>`;
+      } catch(err){ document.getElementById('modalTitle').textContent='Erro'; document.getElementById('modalBody').innerHTML=`<div class="empty" style="color:#dc2626">${err.message}</div>`; }
     }
 
-    // ── INIT ──
-    if (isAuthed()) showDashboard(); else showLogin();
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+    /* ── INIT ── */
+    if(isAuthed()) showDashboard(); else showLogin();
   </script>
 </body>
 </html>
