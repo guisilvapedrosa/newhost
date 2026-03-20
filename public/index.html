@@ -158,7 +158,7 @@
       <!-- NAV -->
       <div class="nav-tabs">
         <button class="nav-tab active" data-tab="emails" onclick="switchTab('emails')">Registros</button>
-        <button class="nav-tab" data-tab="contas" onclick="switchTab('contas')">Financeiro</button>
+        <button class="nav-tab" data-tab="contas" onclick="switchTab('contas')">F</button>
       </div>
 
       <!-- ═══ SEÇÃO EMAILS ═══ -->
@@ -189,6 +189,18 @@
             <div class="filter-field">
               <label>Documento</label>
               <input type="text" id="fDoc" placeholder="Nº doc..." />
+            </div>
+            <div class="filter-field">
+              <label>Tipo doc</label>
+              <select id="fTipoDoc">
+                <option value="">Todos</option>
+                <option value="NF">NF</option>
+                <option value="provisão">Provisão</option>
+                <option value="contra cheque">Contra cheque</option>
+                <option value="boleto">Boleto</option>
+                <option value="duplicata">Duplicata</option>
+                <option value="recibo">Recibo</option>
+              </select>
             </div>
             <div class="filter-field">
               <label>Situação</label>
@@ -351,11 +363,12 @@
       if(pagina<1) return;
       const cliente=document.getElementById('fCliente').value.trim();
       const doc=document.getElementById('fDoc').value.trim();
+      const tipoDoc=document.getElementById('fTipoDoc').value;
       const situacao=document.getElementById('fSituacao').value;
       const vencIni=document.getElementById('fVencIni').value;
       const vencFim=document.getElementById('fVencFim').value;
 
-      if(!cliente && !doc && !situacao && !vencIni && !vencFim) { toast('Informe ao menos um filtro.','error'); return; }
+      if(!cliente && !doc && !tipoDoc && !situacao && !vencIni && !vencFim) { toast('Informe ao menos um filtro.','error'); return; }
 
       const btn=document.getElementById('btnBuscarContas'); btn.disabled=true;
       setContasStatus('<span class="spinner"></span>','loading');
@@ -364,6 +377,7 @@
       const body = {};
       if(cliente) body.nome_cliente=cliente;
       if(doc) body.numero_doc=doc;
+      if(tipoDoc && !doc) body.numero_doc=tipoDoc;
       if(situacao) body.situacao=situacao;
       if(vencIni) body.data_ini_vencimento=dateToBr(vencIni);
       if(vencFim) body.data_fim_vencimento=dateToBr(vencFim);
@@ -377,7 +391,8 @@
 
         contasPagAtual=parseInt(json.pagina)||1;
         contasTotalPag=parseInt(json.numero_paginas)||1;
-        const contas=json.contas||[];
+        let contas=json.contas||[];
+        if(tipoDoc) contas=contas.filter(c=>(c.numero_doc||'').toLowerCase().includes(tipoDoc.toLowerCase()));
 
         if(!contas.length) {
           setContasStatus('Sem resultados','ok');
