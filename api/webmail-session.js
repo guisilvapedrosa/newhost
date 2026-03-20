@@ -59,20 +59,22 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Debug: retorna resposta completa da UAPI para diagnóstico
     const sessionData = data.data || {};
 
-    return res.status(200).json({
-      _raw: data,
-      url: sessionData.url || null,
-      login: sessionData.login || null,
-      token: sessionData.token || null,
-      webmailUrl:
-        sessionData.url ||
-        (sessionData.token
-          ? `https://${CPANEL_HOST}:2096/cpsess${sessionData.token}/`
-          : null),
-    });
+    // token já vem como "/cpsessXXXXXXXX", então basta prefixar o host
+    const webmailUrl = sessionData.url ||
+      (sessionData.token
+        ? `https://${CPANEL_HOST}:2096${sessionData.token}/`
+        : null);
+
+    if (!webmailUrl) {
+      return res.status(500).json({
+        error: "API não retornou URL de sessão",
+        details: sessionData,
+      });
+    }
+
+    return res.status(200).json({ webmailUrl });
   } catch (err) {
     return res.status(500).json({
       error: "Falha ao criar sessão de webmail",
