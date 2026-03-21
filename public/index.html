@@ -2,7 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#334155" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Painel" />
+  <link rel="manifest" href="/manifest.json" />
   <title>Painel</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -124,6 +130,37 @@
     .toast.error { border-color:#fca5a5; color:#dc2626; }
     .toast.success { border-color:#bbf7d0; color:#15803d; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+    /* RESPONSIVE */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    @media (max-width: 640px) {
+      #dashboard { padding: 1rem .5rem; }
+
+      header { flex-direction: column; align-items: flex-start; gap: .6rem; margin-bottom: 1rem; }
+      .header-right { width: 100%; justify-content: flex-end; }
+
+      .nav-tabs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: .25rem; -webkit-overflow-scrolling: touch; }
+      .nav-tab { white-space: nowrap; flex-shrink: 0; }
+
+      .card-header { flex-direction: column; align-items: flex-start; gap: .6rem; }
+      .search-input { width: 100% !important; }
+
+      .filters { flex-direction: column; gap: .6rem; }
+      .filter-field { width: 100%; }
+      .filter-field input, .filter-field select { width: 100%; }
+      #btnBuscarContas { width: 100%; justify-content: center; padding: .5rem; }
+
+      th, td { padding: .55rem .75rem; }
+      .modal-box { max-height: 92vh; border-radius: 12px 12px 0 0; margin-top: auto; }
+      .modal-overlay { align-items: flex-end; padding: 0; }
+      .detail-grid { grid-template-columns: 1fr; }
+
+      .toast-container { bottom: .75rem; right: .75rem; left: .75rem; }
+      .toast { max-width: 100%; }
+
+      .pagination { flex-wrap: wrap; gap: .35rem; }
+    }
   </style>
 </head>
 <body>
@@ -172,7 +209,7 @@
             </div>
             <input type="text" id="emailSearch" class="search-input" placeholder="Buscar..." oninput="renderEmailTable()" style="display:none" />
           </div>
-          <div id="emailTableWrapper">
+          <div class="table-scroll" id="emailTableWrapper">
             <div class="empty">Clique em <strong>Atualizar</strong> para carregar.</div>
           </div>
         </div>
@@ -213,6 +250,10 @@
               </select>
             </div>
             <div class="filter-field">
+              <label>Histórico</label>
+              <input type="text" id="fHistorico" placeholder="Histórico..." />
+            </div>
+            <div class="filter-field">
               <label>Venc. de</label>
               <input type="date" id="fVencIni" />
             </div>
@@ -223,7 +264,7 @@
             <button class="btn btn-neutral" id="btnBuscarContas" onclick="buscarContas(1)">Buscar</button>
             <span id="contasStatus" class="status"></span>
           </div>
-          <div id="contasTableWrapper">
+          <div class="table-scroll" id="contasTableWrapper">
             <div class="empty">Use os filtros acima para pesquisar.</div>
           </div>
           <div id="contasPagination" class="pagination" style="display:none">
@@ -365,10 +406,11 @@
       const doc=document.getElementById('fDoc').value.trim();
       const tipoDoc=document.getElementById('fTipoDoc').value;
       const situacao=document.getElementById('fSituacao').value;
+      const historico=document.getElementById('fHistorico').value.trim();
       const vencIni=document.getElementById('fVencIni').value;
       const vencFim=document.getElementById('fVencFim').value;
 
-      if(!cliente && !doc && !tipoDoc && !situacao && !vencIni && !vencFim) { toast('Informe ao menos um filtro.','error'); return; }
+      if(!cliente && !doc && !tipoDoc && !situacao && !historico && !vencIni && !vencFim) { toast('Informe ao menos um filtro.','error'); return; }
 
       const btn=document.getElementById('btnBuscarContas'); btn.disabled=true;
       setContasStatus('<span class="spinner"></span>','loading');
@@ -379,6 +421,7 @@
       if(doc) body.numero_doc=doc;
       if(tipoDoc && !doc) body.numero_doc=tipoDoc;
       if(situacao) body.situacao=situacao;
+      if(historico) body.historico=historico;
       if(vencIni) body.data_ini_vencimento=dateToBr(vencIni);
       if(vencFim) body.data_fim_vencimento=dateToBr(vencFim);
       body.pagina=pagina;
