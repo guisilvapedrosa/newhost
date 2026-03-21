@@ -392,9 +392,15 @@
           // GET direto — evita o erro "browser doesn't support cookies" em alguns domínios
           window.open(json.url, '_blank');
         } else {
-          const form=document.createElement('form'); form.method='POST'; form.action=json.loginUrl; form.target='_blank';
-          const input=document.createElement('input'); input.type='hidden'; input.name='session'; input.value=json.session;
-          form.appendChild(input); document.body.appendChild(form); form.submit(); document.body.removeChild(form);
+          // Abre aba em branco primeiro, escreve o form nela e submete de dentro da aba.
+          // Isso faz a navegação partir da própria aba (not cross-site desde o painel),
+          // o que resolve o erro "browser doesn't support cookies" em Roundcube/Horde.
+          const w = window.open('', '_blank');
+          if(!w) throw new Error('Popup bloqueado pelo navegador. Permita popups para este site.');
+          const safeUrl = escHtml(json.loginUrl);
+          const safeSession = escHtml(json.session);
+          w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Abrindo webmail...</title></head><body><form id="f" method="POST" action="${safeUrl}"><input type="hidden" name="session" value="${safeSession}"></form><script>document.getElementById('f').submit();<\/script></body></html>`);
+          w.document.close();
         }
       } catch(err){ toast(err.message,'error'); }
       finally{ btns.forEach(b=>b.disabled=false); }
