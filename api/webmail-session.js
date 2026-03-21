@@ -64,6 +64,8 @@ module.exports = async (req, res) => {
     const hostname = sessionData.hostname || CPANEL_HOST;
     const token = sessionData.token;       // ex: "/cpsess9123134155"
     const session = sessionData.session;   // string completa para o POST
+    // url = link GET direto, já autenticado (evita o erro de cookies cross-origin)
+    const directUrl = sessionData.url || null;
 
     if (!token || !session) {
       return res.status(500).json({
@@ -72,11 +74,11 @@ module.exports = async (req, res) => {
       });
     }
 
-    // O login deve ser feito via HTTP POST para este endpoint diretamente
-    // pelo browser do usuário (para o cookie ser setado no domínio correto)
     return res.status(200).json({
       loginUrl: `https://${hostname}:2096${token}/login`,
       session,
+      // Se disponível, o browser abre via GET sem precisar de form POST
+      url: directUrl,
     });
   } catch (err) {
     return res.status(500).json({
